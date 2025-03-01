@@ -2,7 +2,7 @@
 
 function update_ollama_models(){
 	[ $(systemctl is-active ollama) != "active" ] && sudo systemctl start ollama
-	ollama list | awk 'NR>1 {print $1}' | xargs ollama pull
+	ollama list | awk 'NR>1 {system("ollama pull "$1)}'
 }
 
 function update_ollama(){
