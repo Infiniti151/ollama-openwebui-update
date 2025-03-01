@@ -1,16 +1,16 @@
 #!/bin/bash
 
-function update_ollama_models(){
+update_ollama_models(){
 	[ $(systemctl is-active ollama) != "active" ] && sudo systemctl start ollama
-	ollama list | awk 'NR>1 {system("ollama pull "$1)}'
+	ollama list | awk 'NR>1 {print "----------\033[36mUpdating "$1"\033[0m----------";system("ollama pull "$1)}'
 }
 
-function update_ollama(){
+update_ollama(){
 	[ $(systemctl is-active ollama) = "active" ] && sudo systemctl stop ollama
 	curl -fsSL https://ollama.com/install.sh | sh &
 }
 
-function update_openwebui(){
+update_openwebui(){
 	[ $(systemctl is-active docker) != "active" ] && sudo systemctl start docker
 	docker ps -a | awk '/open-webui/ {print $1}' | xargs docker stop | xargs docker remove -f
 	docker pull ghcr.io/open-webui/open-webui:latest &
@@ -20,7 +20,7 @@ function update_openwebui(){
 	docker ps -a
 }
 
-function update(){
+update(){
 	echo -e "------------------\e[32mUpdate Ollama Models\e[0m------------------"
 	update_ollama_models
 	echo -e "------------------\e[32mUpdate Ollama\e[0m-------------------------"
