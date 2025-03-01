@@ -16,3 +16,6 @@ Make sure the dependencies are installed on your system.
 ## Dependencies
 1. [Docker](https://docs.docker.com/get-started/get-docker/): To update Open WebUI docker image
 2. [Regctl](https://github.com/regclient/regclient/blob/main/docs/install.md): To get image digest of remote image
+
+## Output
+![alt text](image.png)
