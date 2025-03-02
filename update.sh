@@ -11,7 +11,6 @@ update_ollama(){
 }
 
 update_openwebui(){
-	[ $(systemctl is-active docker) != "active" ] && sudo systemctl start docker
 	docker ps -a | awk '/open-webui/ {print $1}' | xargs docker stop | xargs docker remove -f
 	docker pull ghcr.io/open-webui/open-webui:latest &
 	wait
@@ -32,6 +31,7 @@ update(){
 ollama_latest=$(git ls-remote -t https://github.com/ollama/ollama.git | awk -e '$2 !~ /rc|ci/ {sub(/refs\/tags\/v/,"");print $2}' | sort -V | awk 'END{print}')
 ollama_local=$(ollama --version | awk '{print $4}')
 
+[ $(systemctl is-active docker) != "active" ] && sudo systemctl start docker
 remote_image_digest=$(regctl image digest ghcr.io/open-webui/open-webui:latest)
 local_image_digest=$(docker image inspect ghcr.io/open-webui/open-webui:latest -f '{{.RepoDigests}}' | awk -F@ '{sub(/]/,"");print $2}')
 
