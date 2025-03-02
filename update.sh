@@ -23,13 +23,13 @@ update(){
 	echo -e "------------------\e[32mUpdate Ollama Models\e[0m------------------"
 	update_ollama_models
 	echo -e "------------------\e[32mUpdate Ollama\e[0m-------------------------"
-	[ $ollama_local != $ollama_latest ] && update_ollama || echo "Ollama is the latest version"
+	[ $ollama_local_version != $ollama_latest_version ] && update_ollama || echo "No update available for Ollama"
 	echo -e "------------------\e[32mUpdate Open WebUI\e[0m---------------------"
-	[ $local_image_digest != $remote_image_digest ] && update_openwebui || echo "Open WebUI is the latest version"
+	[ $local_image_digest != $remote_image_digest ] && update_openwebui || echo "No update available for Open WebUI"
 }
 
-ollama_latest=$(git ls-remote -t https://github.com/ollama/ollama.git | awk -e '$2 !~ /rc|ci/ {sub(/refs\/tags\/v/,"");print $2}' | sort -V | awk 'END{print}')
-ollama_local=$(ollama --version | awk '{print $4}')
+ollama_latest_version=$(git ls-remote -t https://github.com/ollama/ollama.git | awk -e '$2 !~ /rc|ci/ {sub(/refs\/tags\/v/,"");print $2}' | sort -V | awk 'END{print}')
+ollama_local_version=$(ollama --version | awk '{print $4}')
 
 [ $(systemctl is-active docker) != "active" ] && sudo systemctl start docker
 remote_image_digest=$(regctl image digest ghcr.io/open-webui/open-webui:latest)
