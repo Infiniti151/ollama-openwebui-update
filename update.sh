@@ -49,8 +49,10 @@ if ! docker ps &> /dev/null; then
 	echo "Docker is not running. Attempting to start Docker..."
 	if [[ $docker_endpoint == "unix:///var/run/docker.sock" ]]; then
 		sudo systemctl start docker 2>/dev/null
-	elif [[ $docker_endpoint == "unix:///run/user/"* ]]; then
+	elif [[ $docker_endpoint == "unix:///run/user/$(id -u)/docker.sock" ]]; then
 		systemctl --user start docker 2>/dev/null
+	elif [[ $docker_endpoint == "unix://$HOME/.docker/desktop/docker.sock" ]]; then
+		systemctl --user start docker-desktop 2>/dev/null
 	fi
 fi
 remote_image_digest=$(docker buildx imagetools inspect ghcr.io/open-webui/open-webui:latest | awk '/Digest/ {print $2}')
