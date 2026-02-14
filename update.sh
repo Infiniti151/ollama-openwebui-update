@@ -17,11 +17,15 @@ update_ollama(){
 
 update_openwebui(){
 	docker ps -a | awk '/open-webui/ {print $1}' | xargs docker stop | xargs docker remove -f
-	docker pull ghcr.io/open-webui/open-webui:latest &
-	wait
-	docker image prune -f
-	docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:latest
-	docker ps -a
+	if docker pull ghcr.io/open-webui/open-webui:latest; then
+		wait
+		docker image prune -f
+		docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:latest
+		docker ps -a
+	else
+		echo "Failed to pull open-webui image"
+		return 1
+	fi
 }
 
 update(){
