@@ -45,7 +45,7 @@ ollama_latest_version=$(curl -s https://api.github.com/repos/ollama/ollama/relea
 ollama_local_version=$(ollama --version | awk '{print $4}')
 
 if ! docker ps &> /dev/null; then
-	docker_endpoint=$(docker context ls --format '{{.DockerEndpoint}}')
+	docker_endpoint=$(docker context inspect -f '{{.Endpoints.docker.Host}}')
 	echo "Docker is not running. Attempting to start Docker..."
 	if [[ $docker_endpoint == "unix:///var/run/docker.sock" ]]; then
 		sudo systemctl start docker 2>/dev/null
