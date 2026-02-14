@@ -28,11 +28,11 @@ update(){
 	[ $local_image_digest != $remote_image_digest ] && update_openwebui || echo "No update available for Open WebUI"
 }
 
-ollama_latest_version=$(git ls-remote -t https://github.com/ollama/ollama.git | awk -e '$2 !~ /rc|ci/ {sub(/refs\/tags\/v/,"");print $2}' | sort -V | awk 'END{print}')
+ollama_latest_version=$(curl -s https://api.github.com/repos/ollama/ollama/releases/latest | grep -oP '"tag_name":\s*"v\K[^"]+')
 ollama_local_version=$(ollama --version | awk '{print $4}')
 
 [ $(systemctl is-active docker) != "active" ] && sudo systemctl start docker
-remote_image_digest=$(regctl image digest ghcr.io/open-webui/open-webui:latest)
+remote_image_digest=$(docker buildx imagetools inspect ghcr.io/open-webui/open-webui:latest | awk '/Digest/ {print $2}')
 local_image_digest=$(docker image inspect ghcr.io/open-webui/open-webui:latest -f '{{.RepoDigests}}' | awk -F@ '{sub(/]/,"");print $2}')
 
 update
