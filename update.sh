@@ -82,10 +82,11 @@ update_openwebui(){
 			remote_image_digest=$(docker buildx imagetools inspect $image_name | awk '/Digest/ {print $2}')
 			if [[ $local_image_digest != $remote_image_digest ]]; then
 				if docker pull $image_name; then
+					container_id=$(docker ps -a -q --filter "ancestor=$image_name")
 				    echo "Stopping Open WebUI container..."
-					docker stop $(docker ps -a -q --filter "ancestor=$image_name") &>/dev/null
+					docker stop $container_id &>/dev/null
 					echo "Removing Open WebUI container..."
-					docker rm $(docker ps -a -q --filter "ancestor=$image_name") &>/dev/null
+					docker rm $container_id &>/dev/null
 					echo "Cleaning dangling images..."
 					docker image prune -f &>/dev/null
 					echo "Starting new Open WebUI container..."
