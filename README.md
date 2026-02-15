@@ -1,16 +1,21 @@
 # ollama-openwebui-update
 
-Bash script to easily update Ollama models, Ollama, and Open WebUI (Installed via Docker) in Linux
+Bash script to easily update Ollama, Ollama models, and Open WebUI (installed via Docker) in Linux
 
 ## What does the script do?
-1. Updates all downloaded Ollama models
-2. Updates Ollama via the official script if it finds a new release in the GitHub repo
-3. Updates Open WebUI via Docker if the local image digest doesn't match the latest image digest in ghcr.io
+1. Updates Ollama via the official script if there is an update in the GitHub repo
+2. Updates all downloaded Ollama models if they have an update in the Ollama registry
+3. Updates Open WebUI via Docker if there is an update in the registry
+
+**Note:** If Ollama and Open WebUI are not already installed, they are installed by this script. This script doesn't update Open WebUI installed via Pip/Kubernetes(Helm)/Portainer/Umbrel/CasaOS.
 
 ## How to use?
-1. git clone https://github.com/Infiniti151/ollama-openwebui-update.git && cd ollama-openwebui-update
-2. chmod +x update.sh
-3. ./update.sh
+```
+git clone https://github.com/Infiniti151/ollama-openwebui-update.git
+cd ollama-openwebui-update
+chmod +x ./update.sh
+bash ./update.sh
+```
 
 ## Output
 ![alt text](image.png)
