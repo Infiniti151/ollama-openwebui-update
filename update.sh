@@ -32,7 +32,7 @@ update_ollama_models(){
 
 update_ollama(){
 	echo -e "------------------${YELLOW}Updating Ollama${RESET}-------------------------"
-	if command -v ollama &> /dev/null; then
+	if command -v ollama &>/dev/null; then
 	    ollama_local_version=$(ollama --version | awk '{print $4}')
 		ollama_latest_version=$(curl -s https://api.github.com/repos/ollama/ollama/releases/latest | grep -oP '"tag_name":\s*"v\K[^"]+')
 		install_ollama='curl -fsSL https://ollama.com/install.sh | sh &'
@@ -54,8 +54,8 @@ update_ollama(){
 
 update_openwebui(){
 	echo -e "------------------${YELLOW}Updating Open WebUI${RESET}---------------------"
-	if command -v docker &> /dev/null; then
-		if ! docker ps &> /dev/null; then
+	if command -v docker &>/dev/null; then
+		if ! docker ps &>/dev/null; then
 			docker_endpoint=$(docker context inspect -f '{{.Endpoints.docker.Host}}')
 			echo "Docker is not running. Attempting to start Docker..."
 			if [[ $docker_endpoint == "unix:///var/run/docker.sock" ]]; then
@@ -66,14 +66,14 @@ update_openwebui(){
 				systemctl --user start docker-desktop 2>/dev/null
 			fi
 		fi
-		image_name=$(docker ps --format '{{.Image}}' | grep 'open-webui' | head -n1)
+		image_name=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'open-webui')
 		start_container='docker run -d --network=host \
 			-e OLLAMA_BASE_URL=http://127.0.0.1:11434 \
 			-v open-webui:/app/backend/data \
 			--name open-webui \
 			--restart always \
 			'"$image_name"
-		if docker image inspect $image_name 2>&1 | grep -q "No such image";then
+		if ! docker image inspect $image_name &>/dev/null;then
 			echo -e "${RED}Open WebUI is not installed.${RESET}"
 			echo "Installing Open WebUI..."
 			eval $start_container
